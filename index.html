@@ -1,0 +1,52 @@
+<div id="menu" style="display:none;border:1px solid #00ffcc;border-radius:10px;padding:10px;margin:10px">
+<h3 id="menuTitle"></h3>
+
+<label><input type="checkbox" onchange="checkTask()"> 100 شنا</label><br>
+<label><input type="checkbox" onchange="checkTask()"> 100 درازنشست</label><br>
+<label><input type="checkbox" onchange="checkTask()"> 50 بارفیکس</label><br>
+<label><input type="checkbox" onchange="checkTask()"> تمرین بوکس</label><br>
+<label><input type="checkbox" onchange="checkTask()"> تمرین کششی</label><br>
+<label><input type="checkbox" onchange="checkTask()"> اصلاح پای پرانتزی</label><br>
+<label><input type="checkbox" onchange="checkTask()"> مصرف ویتامین‌ها</label><br>
+
+<button onclick="closeMenu()">بستن</button>
+</div>
+<script>
+let currentDay=null;
+
+function toggleDay(day){
+currentDay=day;
+document.getElementById("menu").style.display="block";
+document.getElementById("menuTitle").innerText="تمرینات روز "+day;
+
+let saved=data.tasks?.[day] || [];
+document.querySelectorAll("#menu input").forEach((cb,i)=>{
+cb.checked=saved[i]||false;
+});
+}
+
+function checkTask(){
+if(!data.tasks) data.tasks={};
+let checks=[];
+document.querySelectorAll("#menu input").forEach(cb=>checks.push(cb.checked));
+data.tasks[currentDay]=checks;
+
+if(checks.every(c=>c)){
+if(!data.days[currentDay]){
+data.days[currentDay]=true;
+score+=10;
+streak++;
+}
+}else{
+delete data.days[currentDay];
+}
+
+saveData(days:data.days || {},
+tasks:data.tasks || {},);
+createCalendar();
+}
+
+function closeMenu(){
+document.getElementById("menu").style.display="none";
+}
+</script>
