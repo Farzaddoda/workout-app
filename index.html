@@ -1,91 +1,75 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>برنامه تمرین</title>
-
-<style>
-body{background:#111;color:#fff;font-family:tahoma;text-align:center}
-.day{border:1px solid #555;margin:6px;padding:10px;border-radius:10px;cursor:pointer}
-#menu{display:none;border:1px solid #0f9;margin:10px;padding:10px;border-radius:10px}
-label{display:block;margin:6px 0}
-</style>
-</head>
-
-<body>
-
-<h2>برنامه تمرین</h2>
-
-<div id="calendar"></div>
-
 <div id="menu">
   <h3 id="menuTitle"></h3>
-  <div id="menuContent"></div>
+
+  <h4>💪 تمرینات قدرتی</h4>
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    شنا: 4 ست × 25 تکرار (استراحت 60 ثانیه)
+  </label>
+
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    درازنشست: 4 ست × 25 تکرار (استراحت 45 ثانیه)
+  </label>
+
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    بارفیکس: 5 ست × 10 تکرار (استراحت 90 ثانیه)
+  </label>
+
+  <hr>
+
+  <h4>🥊 تمرین بوکس</h4>
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    بوکس: 3 راند × 3 دقیقه  
+    (بین هر راند 1 دقیقه استراحت)
+  </label>
+
+  <hr>
+
+  <h4>🧘 تمرینات کششی</h4>
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    کشش کل بدن: 10 دقیقه
+  </label>
+
+  <hr>
+
+  <h4>🦵 اصلاح پای پرانتزی</h4>
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    اسکوات اصلاحی (پاها کمی به داخل): 3 ست × 15
+  </label>
+
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    پل باسن با بالش بین زانوها: 3 ست × 20
+  </label>
+
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    راه رفتن پنجه به داخل: 3 دقیقه
+  </label>
+
+  <hr>
+
+  <h4>💊 مصرف ویتامین‌ها</h4>
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    صبح بعد صبحانه: کلسیم + ویتامین D
+  </label>
+
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    بعد از تمرین: ARG+
+  </label>
+
+  <label>
+    <input type="checkbox" onchange="checkTasks()">
+    شب قبل خواب: منیزیم
+  </label>
+
+  <br>
+  <button onclick="closeMenu()">بستن</button>
 </div>
-
-<script>
-const calendar = document.getElementById("calendar");
-const menu = document.getElementById("menu");
-const menuTitle = document.getElementById("menuTitle");
-const menuContent = document.getElementById("menuContent");
-
-let data = JSON.parse(localStorage.getItem("data")) || {};
-let currentDay = null;
-
-function save(){
-  localStorage.setItem("data", JSON.stringify(data));
-}
-
-function createCalendar(){
-  calendar.innerHTML="";
-  for(let d=25; d<=30; d++){
-    const div=document.createElement("div");
-    div.className="day";
-    div.textContent="روز "+d;
-
-    div.addEventListener("click",()=>{
-      openMenu(d);
-    });
-
-    calendar.appendChild(div);
-  }
-}
-
-function openMenu(day){
-  currentDay=day;
-  menu.style.display="block";
-  menuTitle.textContent="تمرینات روز "+day;
-
-  const tasks=[
-    "شنا 4×25",
-    "درازنشست 4×25",
-    "بارفیکس 5×10",
-    "کشش 10 دقیقه",
-    "ویتامین"
-  ];
-
-  menuContent.innerHTML="";
-  tasks.forEach((t,i)=>{
-    const label=document.createElement("label");
-    const cb=document.createElement("input");
-    cb.type="checkbox";
-    cb.checked=data[day]?.[i]||false;
-
-    cb.addEventListener("change",()=>{
-      if(!data[day]) data[day]=[];
-      data[day][i]=cb.checked;
-      save();
-    });
-
-    label.appendChild(cb);
-    label.append(" "+t);
-    menuContent.appendChild(label);
-  });
-}
-
-createCalendar();
-</script>
-
-</body>
-</html>
