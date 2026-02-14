@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>برنامه تا عید 💪</title>
+<style>
+body{font-family:tahoma;background:#111;color:#fff;text-align:center}
+h1{color:#00ffcc}
+.day{border:1px solid #333;margin:5px;padding:10px;border-radius:10px;cursor:pointer}
+.completed{text-decoration:line-through;background:#064}
+button{margin:5px;padding:5px 10px;border-radius:5px;border:none;background:#00ffcc}
+input[type=time]{padding:5px;border-radius:5px}
+.progress{height:20px;background:#333;border-radius:10px;margin:10px}
+.bar{height:100%;background:#00ffcc;border-radius:10px;width:0%}
+</style>
+</head>
+<body>
+
+<h1>برنامه تمرین تا عید 🔥</h1>
+
+<div>
+🎯 هدف: افزایش قدرت + اصلاح پا + نظم کامل  
+</div>
+
+<br>
+
+⏰ ساعت یادآوری:
+<input type="time" id="reminderTime">
+<button onclick="saveTime()">ذخیره</button>
+
+<div class="progress">
+<div class="bar" id="progressBar"></div>
+</div>
+
+<h3 id="score">امتیاز: 0 | استریک: 0</h3>
+
+<div id="calendar"></div>
+
+<script>
+let startDay = 25;
+let totalDays = 34; // 25 بهمن تا 29 اسفند
+let data = JSON.parse(localStorage.getItem("planData")) || {};
+let score = data.score || 0;
+let streak = data.streak || 0;
+let reminderTime = data.reminderTime || "18:30";
+
+document.getElementById("reminderTime").value = reminderTime;
+document.getElementById("score").innerText = `امتیاز: ${score} | استریک: ${streak}`;
+
+function saveData(){
+localStorage.setItem("planData", JSON.stringify({
+days:data.days || {},
+score:score,
+streak:streak,
+reminderTime:reminderTime
+}));
+}
+
+function saveTime(){
+reminderTime=document.getElementById("reminderTime").value;
+saveData();
+alert("ساعت ذخیره شد 👌");
+}
+
+function createCalendar(){
+let cal=document.getElementById("calendar");
+cal.innerHTML="";
+let completedCount=0;
+
+for(let i=0;i<totalDays;i++){
+let dayNum=startDay+i;
+let div=document.createElement("div");
+div.className="day";
+div.innerText=`روز ${dayNum}`;
+if(data.days && data.days[dayNum]){
+div.classList.add("completed");
+completedCount++;
+}
+div.onclick=function(){toggleDay(dayNum)};
+cal.appendChild(div);
+}
+
+let percent=Math.floor((completedCount/totalDays)*100);
+document.getElementById("progressBar").style.width=percent+"%";
+}
+
+function toggleDay(day){
+if(!data.days) data.days={};
+
+if(data.days[day]){
+delete data.days[day];
+score-=10;
+streak=0;
+}else{
+data.days[day]=true;
+score+=10;
+streak++;
+}
+
+document.getElementById("score").innerText=`امتیاز: ${score} | استریک: ${streak}`;
+saveData();
+createCalendar();
+}
+
+function checkReminder(){
+let now=new Date();
+let current=now.getHours().toString().padStart(2,"0")+":"+now.getMinutes().toString().padStart(2,"0");
+
+if(current===reminderTime){
+if(Notification.permission==="granted"){
+new Notification("🔥 وقت تمرینته قهرمان!");
+}
+}
+}
+
+if("Notification" in window){
+Notification.requestPermission();
+}
+
+setInterval(checkReminder,60000);
+
+createCalendar();
+</script>
+
+</body>
+</html>
