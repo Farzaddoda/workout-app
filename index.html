@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>چک‌لیست تمرین تا عید</title>
+<meta name="theme-color" content="#1e3c72">
+<style>
+body{
+  font-family: Tahoma, sans-serif;
+  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  color:#fff;
+  margin:0;
+  padding:15px;
+}
+.container{
+  max-width:480px;
+  margin:auto;
+  background:#ffffff12;
+  backdrop-filter: blur(12px);
+  padding:20px;
+  border-radius:22px;
+}
+h1{text-align:center;font-size:22px;margin-bottom:15px;}
+.section{margin-bottom:20px;}
+.section h2{font-size:18px;margin-bottom:8px;border-bottom:1px solid #ffffff40;padding-bottom:4px;}
+label{
+  display:flex;
+  align-items:center;
+  background:#ffffff15;
+  padding:10px;
+  border-radius:14px;
+  margin:8px 0;
+  font-size:15px;
+}
+input[type="checkbox"]{
+  margin-left:10px;
+  transform:scale(1.4);
+}
+.progress{
+  height:12px;
+  background:#ffffff30;
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:15px;
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:#00ffcc;
+  transition:0.3s;
+}
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:#ffcc00;
+  font-weight:bold;
+  font-size:15px;
+  margin-top:10px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🔥 برنامه روزانه تا عید 🔥</h1>
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div><div class="section">
+<h2>🌅 صبح (اصلاحی و بیدارکننده)</h2>
+<label><input type="checkbox" id="c1"> راه رفتن پنجه‌به‌داخل (۲ دقیقه)</label>
+<label><input type="checkbox" id="c2"> اسکات اصلاحی با توپ/بالش بین زانو (3×15)</label>
+<label><input type="checkbox" id="c3"> بالا آوردن پا از پهلو – هر پا (3×15)</label>
+<label><input type="checkbox" id="c4"> کشش پشت پا (2×30 ثانیه)</label>
+<label><input type="checkbox" id="c12"> صاف ایستادن کنار دیوار + تنفس عمیق (۲ دقیقه)</label>
+</div><div class="section">
+<h2>🥊 عصر (تمرین اصلی و قدرتی)</h2>
+<label><input type="checkbox" id="c5"> طناب یا گرم‌کرد<div class="section">
+<h2>🌙 شب</h2>
+<label><input type="checkbox" id="c10"> مصرف ویتامین‌ها</label>
+<label><input type="checkbox" id="c11"> خواب قبل از 11</label>
+</div><button onclick="resetChecklist()">ریست روز</button>
+
+</div><script>
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+const progressBar = document.getElementById('progressBar');
+
+function updateProgress(){
+  const total = checkboxes.length;
+  const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+  const percent = Math.round((checked/total)*100);
+  progressBar.style.width = percent + '%';
+}
+
+checkboxes.forEach(box => {
+  const saved = localStorage.getItem(box.id);
+  if(saved === 'true') box.checked = true;
+
+  box.addEventListener('change', () => {
+    localStorage.setItem(box.id, box.checked);
+    updateProgress();
+  });
+});
+
+updateProgress();
+
+function resetChecklist(){
+  checkboxes.forEach(box => {
+    box.checked = false;
+    localStorage.setItem(box.id, false);
+  });
+  updateProgress();
+}
+</script></body>
+</html>
