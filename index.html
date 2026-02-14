@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>برنامه تمرین تا عید 💪</title>
+
+<style>
+body{
+  background:#111;
+  color:#fff;
+  font-family:tahoma;
+  text-align:center;
+}
+.day{
+  border:1px solid #333;
+  margin:6px;
+  padding:10px;
+  border-radius:10px;
+  cursor:pointer;
+}
+.completed{
+  background:#064;
+  text-decoration:line-through;
+}
+#menu{
+  display:none;
+  border:1px solid #00ffcc;
+  margin:10px;
+  padding:10px;
+  border-radius:10px;
+}
+button{
+  background:#00ffcc;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  margin-top:10px;
+}
+.progress{
+  height:18px;
+  background:#333;
+  border-radius:10px;
+  margin:10px;
+}
+.bar{
+  height:100%;
+  width:0%;
+  background:#00ffcc;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🔥 برنامه تمرین تا عید 🔥</h2>
+<p>🎯 هدف: قدرت + اصلاح پا + نظم</p>
+
+⏰ ساعت یادآوری:
+<input type="time" id="reminderTime">
+<button onclick="saveTime()">ذخیره</button>
+
+<div class="progress">
+  <div class="bar" id="progressBar"></div>
+</div>
+
+<h3 id="scoreText"></h3>
+
+<div id="calendar"></div>
+
+<!-- منوی تمرین -->
+<div id="menu">
+  <h3 id="menuTitle"></h3>
+
+  <label><input type="checkbox" onchange="checkTasks()"> 100 شنا</label><br>
+  <label><input type="checkbox" onchange="checkTasks()"> 100 درازنشست</label><br>
+  <label><input type="checkbox" onchange="checkTasks()"> 50 بارفیکس</label><br>
+  <label><input type="checkbox" onchange="checkTasks()"> تمرین بوکس</label><br>
+  <label><input type="checkbox" onchange="checkTasks()"> تمرین کششی</label><br>
+  <label><input type="checkbox" onchange="checkTasks()"> اصلاح پای پرانتزی</label><br>
+  <label><input type="checkbox" onchange="checkTasks()"> مصرف ویتامین‌ها</label><br>
+
+  <button onclick="closeMenu()">بستن</button>
+</div>
+
+<script>
+let startDay = 25;
+let totalDays = 34;
+
+let data = JSON.parse(localStorage.getItem("planData")) || {
+  days:{},
+  tasks:{},
+  score:0,
+  streak:0,
+  reminderTime:"18:30"
+};
+
+let currentDay = null;
+
+document.getElementById("reminderTime").value = data.reminderTime;
+updateScore();
+
+function saveData(){
+  localStorage.setItem("planData", JSON.stringify(data));
+}
+
+function updateScore(){
+  document.getElementById("scoreText").innerText =
+  `امتیاز: ${data.score} | استریک: ${data.streak}`;
+}
+
+function saveTime(){
+  data.reminderTime = document.getElementById("reminderTime").value;
+  saveData();
+  alert("⏰ ذخیره شد");
+}
+
+function createCalendar(){
+  let cal = document.getElementById("calendar");
+  cal.innerHTML="";
+  let done=0;
+
+  for(let i=0;i<totalDays;i++){
+    let d = startDay + i;
+    let div = document.createElement("div");
+    div.className="day";
+    div.innerText="روز " + d;
+
+    if(data.days[d]){
+      div.classList.add("completed");
+      done++;
+    }
+
+    div.onclick = ()=>openMenu(d);
+    cal.appendChild(div);
+  }
+
+  document.getElementById("progressBar").style.width =
+  Math.floor(done/totalDays*100) + "%";
+}
+
+function openMenu(day){
+  currentDay = day;
+  document.getElementById("menu").style.display="block";
+  document.getElementById("menuTitle").innerText="تمرینات روز "+day;
+
+  let saved = data.tasks[day] || [];
+  document.querySelectorAll("#menu input").forEach((cb,i)=>{
+    cb.checked = saved[i] || false;
+  });
+}
+
+function checkTasks(){
+  let checks=[];
+  document.querySelectorAll("#menu input").forEach(cb=>checks.push(cb.checked));
+  data.tasks[currentDay]=checks;
+
+  if(checks.every(c=>c)){
+    if(!data.days[currentDay]){
+      data.days[currentDay]=true;
+      data.score+=10;
+      data.streak++;
+    }
+  }else{
+    delete data.days[currentDay];
+  }
+
+  saveData();
+  updateScore();
+  createCalendar();
+}
+
+function closeMenu(){
+  document.getElementById("menu").style.display="none";
+}
+
+function checkReminder(){
+  let now=new Date();
+  let t=now.getHours().toString().padStart(2,"0")+":"+
+        now.getMinutes().toString().padStart(2,"0");
+  if(t===data.reminderTime && Notification.permission==="granted"){
+    new Notification("🔥 وقت تمرینه قهرمان!");
+  }
+}
+
+if("Notification" in window){
+  Notification.requestPermission();
+}
+setInterval(checkReminder,60000);
+
+createCalendar();
+</script>
+
+</body>
+</html>
